@@ -1,0 +1,645 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Syne", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+
+  /* Brand */
+  --color-base: #080810;
+  --color-surface: rgba(4,4,16,0.75);
+  --color-accent: #8B5CF6;        /* purple — primary */
+  --color-accent2: #C4B5FD;
+  --color-teal: #10B981;          /* emerald — citations/status only */
+  --color-text-primary: #E0E0F0;
+  --color-text-muted: #606070;
+  --color-text-dim: #252535;
+
+  /* shadcn */
+  --color-background: #080810;
+  --color-foreground: #E0E0F0;
+  --color-border: rgba(255,255,255,0.06);
+  --color-input: rgba(255,255,255,0.08);
+  --color-ring: #8B5CF6;
+  --color-primary: #8B5CF6;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: rgba(255,255,255,0.04);
+  --color-secondary-foreground: #E0E0F0;
+  --color-muted: rgba(255,255,255,0.03);
+  --color-muted-foreground: #606070;
+  --color-accent-foreground: #E0E0F0;
+  --color-card: rgba(4,4,16,0.65);
+  --color-card-foreground: #E0E0F0;
+  --color-popover: #0c0c18;
+  --color-popover-foreground: #E0E0F0;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+}
+
+html, body, #root {
+  background-color: #060610;
+  min-height: 100vh;
+  color: #E0E0F0;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 400;
+}
+
+/* Cinematic background: midnight black + purple arc bottom center + corner emerald smoke */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    /* corner emerald smoke 5–10% */
+    radial-gradient(ellipse 60% 40% at 0% 0%, rgba(16,185,129,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 35% at 100% 0%, rgba(16,185,129,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, rgba(16,185,129,0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 0% 100%, rgba(16,185,129,0.05) 0%, transparent 60%),
+    /* navy underlay */
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(20,18,46,0.55) 0%, transparent 70%),
+    linear-gradient(180deg, #050510 0%, #07071a 60%, #050510 100%);
+}
+
+/* Drifting purple orb — top right */
+.app-bg .orb-1 {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 50vw;
+  height: 50vw;
+  max-width: 700px;
+  max-height: 700px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 50%, rgba(139,92,246,0.16) 0%, transparent 65%);
+  filter: blur(60px);
+  animation: drift1 26s ease-in-out infinite alternate;
+}
+
+/* Drifting emerald orb — left middle */
+.app-bg .orb-2 {
+  position: absolute;
+  top: 35%;
+  left: -15%;
+  width: 45vw;
+  height: 45vw;
+  max-width: 600px;
+  max-height: 600px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 50%, rgba(16,185,129,0.10) 0%, transparent 65%);
+  filter: blur(70px);
+  animation: drift2 32s ease-in-out infinite alternate;
+}
+
+/* Soft violet orb — drifting center-top */
+.app-bg .orb-3 {
+  position: absolute;
+  top: 5%;
+  left: 30%;
+  width: 35vw;
+  height: 35vw;
+  max-width: 500px;
+  max-height: 500px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 50%, rgba(196,181,253,0.08) 0%, transparent 65%);
+  filter: blur(70px);
+  animation: drift3 38s ease-in-out infinite alternate;
+}
+
+@keyframes drift1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-6%, 8%) scale(1.08); }
+  100% { transform: translate(-12%, -4%) scale(0.96); }
+}
+@keyframes drift2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(8%, -6%) scale(1.1); }
+  100% { transform: translate(4%, 10%) scale(0.94); }
+}
+@keyframes drift3 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(10%, 6%) scale(1.05); }
+  100% { transform: translate(-8%, -8%) scale(0.95); }
+}
+
+/* Fine grain texture for depth, prevents flatness */
+.app-bg .grain {
+  position: absolute;
+  inset: -200px;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* Subtle dot-grid pattern for texture */
+.app-bg .grid-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.4;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 0%, transparent 75%);
+}
+
+.app-bg::before {
+  /* oversized purple neon arc emerging from bottom center */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -55%;
+  transform: translateX(-50%);
+  width: 140vw;
+  height: 140vw;
+  max-width: 1800px;
+  max-height: 1800px;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(139,92,246,0.22) 0%, rgba(139,92,246,0.10) 28%, transparent 55%);
+  filter: blur(40px);
+  animation: archPulse 14s ease-in-out infinite alternate;
+}
+.app-bg::after {
+  /* tight purple rim glow accent on the arc */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -50%;
+  transform: translateX(-50%);
+  width: 110vw;
+  height: 110vw;
+  max-width: 1500px;
+  max-height: 1500px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 30%, rgba(196,181,253,0.10) 0%, transparent 35%);
+  filter: blur(60px);
+}
+
+@keyframes archPulse {
+  0%   { opacity: 0.85; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-bg .orb-1, .app-bg .orb-2, .app-bg .orb-3, .app-bg::before { animation: none; }
+}
+
+
+#root > * { position: relative; z-index: 1; }
+
+* { border-color: rgba(255,255,255,0.06); }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.25); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.45); }
+
+@keyframes march {
+  to { stroke-dashoffset: -24; }
+}
+.march { animation: march 1.2s linear infinite; }
+
+.gradient-text {
+  background: linear-gradient(135deg, #C4B5FD, #8B5CF6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.gradient-bg { background: linear-gradient(135deg, #4C1D95, #8B5CF6); }
+.glass {
+  background: rgba(4,4,16,0.65);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(16px);
+}
+.glass-strong {
+  background: rgba(4,4,16,0.82);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(28px);
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
+
+/* ═══════════════════════════════════════════════════
+   THEME VARIANTS — selectable backgrounds (Settings page)
+   ═══════════════════════════════════════════════════ */
+
+/* ── Theme 2: Aurora Borealis — teal/emerald/indigo flowing lights ── */
+.app-bg[data-theme="aurora"] {
+  background:
+    radial-gradient(ellipse 65% 45% at 15% 10%, rgba(45,212,191,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 15%, rgba(99,102,241,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 55% at 85% 95%, rgba(52,211,153,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 35% at 5% 95%, rgba(20,184,166,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 90% 60% at 50% 25%, rgba(16,30,46,0.6) 0%, transparent 70%),
+    linear-gradient(180deg, #04100e 0%, #061a1c 55%, #050f12 100%);
+}
+.app-bg[data-theme="aurora"] .orb-1 {
+  background: radial-gradient(circle at 50% 50%, rgba(45,212,191,0.20) 0%, transparent 65%);
+}
+.app-bg[data-theme="aurora"] .orb-2 {
+  background: radial-gradient(circle at 50% 50%, rgba(99,102,241,0.16) 0%, transparent 65%);
+}
+.app-bg[data-theme="aurora"] .orb-3 {
+  background: radial-gradient(circle at 50% 50%, rgba(52,211,153,0.14) 0%, transparent 65%);
+}
+.app-bg[data-theme="aurora"]::before {
+  background: radial-gradient(circle at 50% 35%, rgba(45,212,191,0.20) 0%, rgba(20,184,166,0.10) 28%, transparent 55%);
+}
+.app-bg[data-theme="aurora"]::after {
+  background: radial-gradient(circle at 50% 30%, rgba(110,231,183,0.10) 0%, transparent 35%);
+}
+/* Flowing aurora ribbon */
+.app-bg[data-theme="aurora"] .ribbon {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(115deg,
+    transparent 20%,
+    rgba(45,212,191,0.07) 35%,
+    rgba(99,102,241,0.06) 50%,
+    rgba(52,211,153,0.07) 65%,
+    transparent 80%);
+  filter: blur(50px);
+  animation: ribbonFlow 30s linear infinite;
+  mix-blend-mode: screen;
+}
+@keyframes ribbonFlow {
+  0%   { transform: translate(-10%, -5%) rotate(0deg); }
+  50%  { transform: translate(5%, 5%) rotate(2deg); }
+  100% { transform: translate(-10%, -5%) rotate(0deg); }
+}
+
+/* ── Theme 3: Sunset Ember — warm orange/pink/red glow ── */
+.app-bg[data-theme="ember"] {
+  background:
+    radial-gradient(ellipse 60% 45% at 85% 5%, rgba(249,115,22,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 40% at 10% 10%, rgba(236,72,153,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 75% 55% at 50% 100%, rgba(239,68,68,0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 35% at 95% 90%, rgba(251,191,36,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 85% 60% at 50% 30%, rgba(46,16,20,0.6) 0%, transparent 70%),
+    linear-gradient(180deg, #0f0608 0%, #1a0a0c 55%, #0c0506 100%);
+}
+.app-bg[data-theme="ember"] .orb-1 {
+  background: radial-gradient(circle at 50% 50%, rgba(249,115,22,0.22) 0%, transparent 65%);
+}
+.app-bg[data-theme="ember"] .orb-2 {
+  background: radial-gradient(circle at 50% 50%, rgba(236,72,153,0.16) 0%, transparent 65%);
+}
+.app-bg[data-theme="ember"] .orb-3 {
+  background: radial-gradient(circle at 50% 50%, rgba(251,191,36,0.10) 0%, transparent 65%);
+}
+.app-bg[data-theme="ember"]::before {
+  background: radial-gradient(circle at 50% 35%, rgba(239,68,68,0.24) 0%, rgba(249,115,22,0.12) 28%, transparent 55%);
+}
+.app-bg[data-theme="ember"]::after {
+  background: radial-gradient(circle at 50% 30%, rgba(253,186,116,0.10) 0%, transparent 35%);
+}
+
+/* ── Theme 4: Cyber Neon — cyan/magenta grid, electric ── */
+.app-bg[data-theme="cyber"] {
+  background:
+    radial-gradient(ellipse 60% 40% at 0% 0%, rgba(34,211,238,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 35% at 100% 0%, rgba(232,121,249,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, rgba(34,211,238,0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 0% 100%, rgba(232,121,249,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(10,10,30,0.6) 0%, transparent 70%),
+    linear-gradient(180deg, #03030c 0%, #060616 60%, #03030a 100%);
+}
+.app-bg[data-theme="cyber"] .orb-1 {
+  background: radial-gradient(circle at 50% 50%, rgba(34,211,238,0.20) 0%, transparent 65%);
+}
+.app-bg[data-theme="cyber"] .orb-2 {
+  background: radial-gradient(circle at 50% 50%, rgba(232,121,249,0.18) 0%, transparent 65%);
+}
+.app-bg[data-theme="cyber"] .orb-3 {
+  background: radial-gradient(circle at 50% 50%, rgba(129,140,248,0.12) 0%, transparent 65%);
+}
+.app-bg[data-theme="cyber"]::before {
+  background: radial-gradient(circle at 50% 35%, rgba(34,211,238,0.18) 0%, rgba(232,121,249,0.10) 28%, transparent 55%);
+}
+.app-bg[data-theme="cyber"]::after {
+  background: radial-gradient(circle at 50% 30%, rgba(165,243,252,0.10) 0%, transparent 35%);
+}
+/* Sharper cyberpunk grid */
+.app-bg[data-theme="cyber"] .grid-pattern {
+  opacity: 0.7;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, black 0%, transparent 80%);
+}
+/* Scanline shimmer */
+.app-bg[data-theme="cyber"] .scanline {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(34,211,238,0.25), rgba(232,121,249,0.2), transparent);
+  filter: blur(1px);
+  animation: scanMove 9s linear infinite;
+}
+@keyframes scanMove {
+  0%   { top: -5%; opacity: 0; }
+  10%  { opacity: 0.8; }
+  90%  { opacity: 0.8; }
+  100% { top: 105%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-bg .ribbon, .app-bg .scanline { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL THEME VARIABLES — sidebar/topbar/cards blend with theme
+   ═══════════════════════════════════════════════════ */
+:root, html[data-theme="violet"] {
+  --sidebar-bg: rgba(4,4,12,0.78);
+  --sidebar-border: rgba(255,255,255,0.06);
+  --topbar-bg: rgba(4,4,12,0.65);
+  --card-tint: rgba(255,255,255,0.03);
+  --accent: #8B5CF6;
+}
+html[data-theme="aurora"] {
+  --sidebar-bg: rgba(3,16,16,0.80);
+  --sidebar-border: rgba(45,212,191,0.12);
+  --topbar-bg: rgba(3,16,16,0.65);
+  --card-tint: rgba(45,212,191,0.04);
+  --accent: #2DD4BF;
+}
+html[data-theme="ember"] {
+  --sidebar-bg: rgba(18,7,9,0.80);
+  --sidebar-border: rgba(249,115,22,0.12);
+  --topbar-bg: rgba(18,7,9,0.65);
+  --card-tint: rgba(249,115,22,0.04);
+  --accent: #F97316;
+}
+html[data-theme="cyber"] {
+  --sidebar-bg: rgba(4,4,18,0.82);
+  --sidebar-border: rgba(34,211,238,0.14);
+  --topbar-bg: rgba(4,4,18,0.68);
+  --card-tint: rgba(34,211,238,0.04);
+  --accent: #22D3EE;
+}
+html[data-theme="polygon"] {
+  --sidebar-bg: rgba(4,14,16,0.80);
+  --sidebar-border: rgba(45,212,191,0.12);
+  --topbar-bg: rgba(4,14,16,0.65);
+  --card-tint: rgba(45,212,191,0.04);
+  --accent: #2DD4BF;
+}
+html[data-theme="watercolor"] {
+  --sidebar-bg: rgba(28,20,30,0.82);
+  --sidebar-border: rgba(236,180,210,0.14);
+  --topbar-bg: rgba(28,20,30,0.68);
+  --card-tint: rgba(236,180,210,0.05);
+  --accent: #EC9CC2;
+}
+html[data-theme="waves"] {
+  --sidebar-bg: rgba(14,18,34,0.82);
+  --sidebar-border: rgba(165,180,252,0.14);
+  --topbar-bg: rgba(14,18,34,0.68);
+  --card-tint: rgba(165,180,252,0.05);
+  --accent: #A5B4FC;
+}
+html[data-theme="inkteal"] {
+  --sidebar-bg: rgba(3,10,20,0.82);
+  --sidebar-border: rgba(56,189,248,0.14);
+  --topbar-bg: rgba(3,10,20,0.68);
+  --card-tint: rgba(56,189,248,0.05);
+  --accent: #38BDF8;
+}
+html[data-theme="frosted"] {
+  --sidebar-bg: rgba(24,26,32,0.82);
+  --sidebar-border: rgba(186,200,224,0.14);
+  --topbar-bg: rgba(24,26,32,0.68);
+  --card-tint: rgba(186,200,224,0.05);
+  --accent: #93C5FD;
+}
+html[data-theme="horizon"] {
+  --sidebar-bg: rgba(3,6,18,0.82);
+  --sidebar-border: rgba(139,92,246,0.14);
+  --topbar-bg: rgba(3,6,18,0.68);
+  --card-tint: rgba(139,92,246,0.05);
+  --accent: #8B5CF6;
+}
+
+/* ═══════════════════════════════════════════════════
+   THEMES 5–10 — HD photographic backgrounds
+   ═══════════════════════════════════════════════════ */
+.app-bg[data-theme="polygon"],
+.app-bg[data-theme="watercolor"],
+.app-bg[data-theme="waves"],
+.app-bg[data-theme="inkteal"],
+.app-bg[data-theme="frosted"],
+.app-bg[data-theme="horizon"] {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.app-bg[data-theme="polygon"]    { background-image: url("/themes/polygon.jpg"); }
+.app-bg[data-theme="watercolor"] { background-image: url("/themes/watercolor.jpg"); }
+.app-bg[data-theme="waves"]      { background-image: url("/themes/waves.jpg"); }
+.app-bg[data-theme="inkteal"]    { background-image: url("/themes/inkteal.jpg"); }
+.app-bg[data-theme="frosted"]    { background-image: url("/themes/frosted.jpg"); }
+.app-bg[data-theme="horizon"]    { background-image: url("/themes/horizon.jpg"); }
+
+/* Hide procedural decorations for image-based themes — let the photo speak */
+.app-bg[data-theme="polygon"] .orb-1,
+.app-bg[data-theme="polygon"] .orb-2,
+.app-bg[data-theme="polygon"] .orb-3,
+.app-bg[data-theme="polygon"]::before,
+.app-bg[data-theme="polygon"]::after,
+.app-bg[data-theme="polygon"] .grid-pattern,
+.app-bg[data-theme="watercolor"] .orb-1,
+.app-bg[data-theme="watercolor"] .orb-2,
+.app-bg[data-theme="watercolor"] .orb-3,
+.app-bg[data-theme="watercolor"]::before,
+.app-bg[data-theme="watercolor"] .grid-pattern,
+.app-bg[data-theme="waves"] .orb-1,
+.app-bg[data-theme="waves"] .orb-2,
+.app-bg[data-theme="waves"] .orb-3,
+.app-bg[data-theme="waves"]::before,
+.app-bg[data-theme="waves"] .grid-pattern,
+.app-bg[data-theme="inkteal"] .orb-1,
+.app-bg[data-theme="inkteal"] .orb-2,
+.app-bg[data-theme="inkteal"] .orb-3,
+.app-bg[data-theme="inkteal"]::before,
+.app-bg[data-theme="inkteal"]::after,
+.app-bg[data-theme="inkteal"] .grid-pattern,
+.app-bg[data-theme="frosted"] .orb-1,
+.app-bg[data-theme="frosted"] .orb-2,
+.app-bg[data-theme="frosted"] .orb-3,
+.app-bg[data-theme="frosted"]::before,
+.app-bg[data-theme="frosted"] .grid-pattern,
+.app-bg[data-theme="horizon"] .orb-1,
+.app-bg[data-theme="horizon"] .orb-2,
+.app-bg[data-theme="horizon"] .orb-3,
+.app-bg[data-theme="horizon"]::before,
+.app-bg[data-theme="horizon"]::after,
+.app-bg[data-theme="horizon"] .grid-pattern {
+  display: none;
+}
+
+/* Keep grain very subtle on photo themes for texture cohesion */
+.app-bg[data-theme="polygon"] .grain,
+.app-bg[data-theme="watercolor"] .grain,
+.app-bg[data-theme="waves"] .grain,
+.app-bg[data-theme="inkteal"] .grain,
+.app-bg[data-theme="frosted"] .grain,
+.app-bg[data-theme="horizon"] .grain {
+  opacity: 0.03;
+}
+
+/* Shooting stars overlay for Horizon theme (kept, drawn over the photo) */
+.app-bg[data-theme="horizon"] .star {
+  position: absolute;
+  width: 100px;
+  height: 1.5px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.9), transparent);
+  border-radius: 2px;
+  opacity: 0;
+  animation: shootStar 7s linear infinite;
+}
+.app-bg[data-theme="horizon"] .star-1 { top: 12%; left: 65%; transform: rotate(18deg); animation-delay: 0s; }
+.app-bg[data-theme="horizon"] .star-2 { top: 22%; left: 20%; transform: rotate(25deg); animation-delay: 2.4s; width: 70px; }
+.app-bg[data-theme="horizon"] .star-3 { top: 8%; left: 40%; transform: rotate(15deg); animation-delay: 4.6s; width: 60px; }
+.app-bg[data-theme="horizon"] .star-4 { top: 30%; left: 75%; transform: rotate(22deg); animation-delay: 5.8s; width: 85px; }
+@keyframes shootStar {
+  0%   { opacity: 0; transform: translate(0,0) rotate(20deg) scaleX(0.4); }
+  4%   { opacity: 1; }
+  14%  { opacity: 0.9; transform: translate(220px, 90px) rotate(20deg) scaleX(1); }
+  20%  { opacity: 0; transform: translate(280px, 115px) rotate(20deg) scaleX(1); }
+  100% { opacity: 0; }
+}
+
+/* Light-background themes (watercolor, waves, frosted) need dark UI overlay
+   so glassmorphism cards/sidebar remain legible */
+.app-bg[data-theme="watercolor"]::after,
+.app-bg[data-theme="waves"]::after,
+.app-bg[data-theme="frosted"]::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 40%, rgba(6,6,14,0.55) 0%, rgba(6,6,14,0.72) 100%);
+  backdrop-filter: saturate(0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-bg .blob, .app-bg .facet, .app-bg .star { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════
+   THEME 11 — Obsidian Gold (charcoal/black + warm amber/gold glow)
+   ═══════════════════════════════════════════════════ */
+html[data-theme="obsidian"] {
+  --sidebar-bg: rgba(10,8,4,0.82);
+  --sidebar-border: rgba(245,191,98,0.14);
+  --topbar-bg: rgba(10,8,4,0.68);
+  --card-tint: rgba(245,191,98,0.05);
+  --accent: #F5BF62;
+}
+.app-bg[data-theme="obsidian"] {
+  background:
+    radial-gradient(ellipse 55% 40% at 85% 10%, rgba(245,191,98,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 10% 90%, rgba(217,119,6,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(30,22,10,0.6) 0%, transparent 70%),
+    linear-gradient(180deg, #08070a 0%, #120e08 55%, #08070a 100%);
+}
+.app-bg[data-theme="obsidian"] .orb-1 { background: radial-gradient(circle, rgba(245,191,98,0.20) 0%, transparent 65%); }
+.app-bg[data-theme="obsidian"] .orb-2 { background: radial-gradient(circle, rgba(217,119,6,0.14) 0%, transparent 65%); }
+.app-bg[data-theme="obsidian"] .orb-3 { background: radial-gradient(circle, rgba(252,211,77,0.10) 0%, transparent 65%); }
+.app-bg[data-theme="obsidian"]::before {
+  background: radial-gradient(circle at 50% 35%, rgba(245,191,98,0.18) 0%, rgba(217,119,6,0.08) 28%, transparent 55%);
+}
+.app-bg[data-theme="obsidian"]::after {
+  background: radial-gradient(circle at 50% 30%, rgba(254,243,199,0.08) 0%, transparent 35%);
+}
+/* Subtle gold particles drifting */
+.app-bg[data-theme="obsidian"] .spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 9999px;
+  background: #F5BF62;
+  box-shadow: 0 0 6px rgba(245,191,98,0.8);
+  opacity: 0;
+  animation: sparkRise 12s ease-in infinite;
+}
+.app-bg[data-theme="obsidian"] .spark-1 { left: 15%; bottom: 5%; animation-delay: 0s; }
+.app-bg[data-theme="obsidian"] .spark-2 { left: 45%; bottom: 0%; animation-delay: 3s; width: 2px; height: 2px; }
+.app-bg[data-theme="obsidian"] .spark-3 { left: 70%; bottom: 8%; animation-delay: 6s; }
+.app-bg[data-theme="obsidian"] .spark-4 { left: 85%; bottom: 2%; animation-delay: 9s; width: 2px; height: 2px; }
+@keyframes sparkRise {
+  0%   { opacity: 0; transform: translateY(0) scale(0.8); }
+  10%  { opacity: 0.9; }
+  80%  { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-60vh) scale(1.2); }
+}
+
+/* ═══════════════════════════════════════════════════
+   THEME 12 — Crimson Nebula (deep maroon/crimson + magenta/violet nebula)
+   ═══════════════════════════════════════════════════ */
+html[data-theme="nebula"] {
+  --sidebar-bg: rgba(16,4,10,0.82);
+  --sidebar-border: rgba(244,63,94,0.14);
+  --topbar-bg: rgba(16,4,10,0.68);
+  --card-tint: rgba(244,63,94,0.05);
+  --accent: #FB7185;
+}
+.app-bg[data-theme="nebula"] {
+  background:
+    radial-gradient(ellipse 65% 50% at 20% 15%, rgba(244,63,94,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 40% at 85% 25%, rgba(192,38,211,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 55% at 60% 90%, rgba(124,58,237,0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 0% 100%, rgba(225,29,72,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0408 0%, #1a0510 55%, #0a0408 100%);
+}
+.app-bg[data-theme="nebula"] .orb-1 { background: radial-gradient(circle, rgba(244,63,94,0.22) 0%, transparent 65%); }
+.app-bg[data-theme="nebula"] .orb-2 { background: radial-gradient(circle, rgba(192,38,211,0.18) 0%, transparent 65%); }
+.app-bg[data-theme="nebula"] .orb-3 { background: radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 65%); }
+.app-bg[data-theme="nebula"]::before {
+  background: radial-gradient(circle at 50% 35%, rgba(244,63,94,0.22) 0%, rgba(192,38,211,0.10) 28%, transparent 55%);
+}
+.app-bg[data-theme="nebula"]::after {
+  background: radial-gradient(circle at 50% 30%, rgba(253,164,175,0.10) 0%, transparent 35%);
+}
+/* Nebula cloud drift */
+.app-bg[data-theme="nebula"] .nebula-cloud {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  mix-blend-mode: screen;
+  opacity: 0.5;
+  animation: nebulaDrift 46s ease-in-out infinite alternate;
+}
+.app-bg[data-theme="nebula"] .nebula-cloud-1 {
+  top: -10%; right: 5%; width: 50vw; height: 50vw; max-width: 650px; max-height: 650px;
+  background: radial-gradient(circle, rgba(192,38,211,0.30) 0%, transparent 70%);
+}
+.app-bg[data-theme="nebula"] .nebula-cloud-2 {
+  bottom: -15%; left: 0%; width: 55vw; height: 55vw; max-width: 700px; max-height: 700px;
+  background: radial-gradient(circle, rgba(244,63,94,0.22) 0%, transparent 70%);
+  animation-delay: -18s;
+}
+@keyframes nebulaDrift {
+  0%   { transform: translate(0,0) scale(1); }
+  50%  { transform: translate(-4%, 4%) scale(1.08); }
+  100% { transform: translate(4%, -3%) scale(0.95); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-bg .spark, .app-bg .nebula-cloud { animation: none; }
+}
